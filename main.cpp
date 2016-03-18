@@ -1,21 +1,5 @@
 #include "backend.hpp"
 
-#ifdef ANIMATE_BACKEND
-void InitApp()
-{
-    // init
-    
-}
-void RenderApp()
-{
-    // render
-}
-void CleanupApp()
-{
-    // shutdown
-}
-#else
-
 struct
 {
     GLuint program;
@@ -74,22 +58,6 @@ void prepareProgram()
 
     g.tex_loc = glGetUniformLocation(g.program, "tex");
 
-    // -- LOG ---------------------------
-    int infologLen = 0;
-    int charsWritten = 0;
-    GLchar *infoLog = NULL;
-    glGetProgramiv(g.program, GL_INFO_LOG_LENGTH, &infologLen);
-    if (infologLen > 0)
-    {
-        infoLog = (GLchar*)malloc(infologLen);
-        if (infoLog == NULL)
-            return;
-        glGetProgramInfoLog(g.program, infologLen, &charsWritten, infoLog);
-    }
-    printf("%s", infoLog);
-    delete[] infoLog;
-    // -- LOG ---------------------------
-
     glDeleteShader(vshdr);
     glDeleteShader(fshdr);
 }
@@ -113,10 +81,6 @@ void drawFSQ()
 
 #include "mt.h"
 
-#define LAYOUT_LINEAR 0
-#define LAYOUT_LAYERED 1
-#define DATA_LAYOUT LAYOUT_LAYERED
-
 void mainApp()
 {
     // setup
@@ -130,23 +94,10 @@ void mainApp()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     GL_ERRCHK();
     // l1-l2-l3
-    if (DATA_LAYOUT == LAYOUT_LAYERED)
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 320*3, 256, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
-        GL_ERRCHK();
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
-        GL_ERRCHK();
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 320, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data + 256 * 320);
-        GL_ERRCHK();
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 640, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data + 256 * 320 * 2);
-        GL_ERRCHK();
-    }
-    // linear
-    else
-    {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 320*3, 256, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
-        GL_ERRCHK();
-    }
+    GL_ERRCHK(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 320 * 3, 256, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0));
+    GL_ERRCHK(glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data));
+    GL_ERRCHK(glTexSubImage2D(GL_TEXTURE_2D, 0, 320, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data + 256 * 320));
+    GL_ERRCHK(glTexSubImage2D(GL_TEXTURE_2D, 0, 640, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data + 256 * 320 * 2));
 
     // render
     glUseProgram(g.program);
@@ -156,4 +107,3 @@ void mainApp()
     drawFSQ();
     SwapBuffersBackend();
 }
-#endif
