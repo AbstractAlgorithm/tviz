@@ -111,9 +111,7 @@ void drawFSQ()
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-const char data[256*320*3] = {
-    //data
-};
+#include "mt.h"
 
 #define LAYOUT_LINEAR 0
 #define LAYOUT_LAYERED 1
@@ -130,21 +128,25 @@ void mainApp()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    GL_ERRCHK();
     // l1-l2-l3
     if (DATA_LAYOUT == LAYOUT_LAYERED)
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256*3,320, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 256, 320, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 256, 0, 256, 320, GL_LUMINANCE, GL_UNSIGNED_BYTE, data+256*320);
-        glTexSubImage2D(GL_TEXTURE_2D, 0, 516, 0, 256, 320, GL_LUMINANCE, GL_UNSIGNED_BYTE, data+256*320*2);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 320*3, 256, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, 0);
+        GL_ERRCHK();
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
+        GL_ERRCHK();
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 320, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data + 256 * 320);
+        GL_ERRCHK();
+        glTexSubImage2D(GL_TEXTURE_2D, 0, 640, 0, 320, 256, GL_LUMINANCE, GL_UNSIGNED_BYTE, data + 256 * 320 * 2);
+        GL_ERRCHK();
     }
     // linear
     else
     {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256 * 3, 320, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
+        GL_ERRCHK();
     }
-
-    GL_ERRCHK();
 
     // render
     glUseProgram(g.program);

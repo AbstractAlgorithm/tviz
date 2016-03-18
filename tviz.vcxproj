@@ -81,6 +81,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="backend.hpp" />
+    <ClInclude Include="mt.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
