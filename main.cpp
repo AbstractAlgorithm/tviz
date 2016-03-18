@@ -144,7 +144,7 @@ void mainApp()
     // linear
     else
     {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 256 * 3, 320, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 320*3, 256, 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, data);
         GL_ERRCHK();
     }
 
